@@ -1,5 +1,5 @@
-import tkinter as tk
-from PIL import Image, ImageTk
+from PIL import Image
+import sys
 
 # Definimos una función que recibe el nombre de una imagen y devuelve las coordenadas de los puntos extremos del área que no es blanca
 def obtenerExtremos(imagen: str) -> tuple:
@@ -44,27 +44,23 @@ def moverImagen(imagen: str, puntos: tuple) -> None:
     auxX = 0
     auxY = alto - imagenCortada.height
     nuevaImagen.paste(imagenCortada, (auxX,auxY))
-    nuevaImagen.save("nuevaImagen.png")
+    nuevaRuta = sys.argv[1].rsplit("\\", 1)[0]
+    nuevaImagen.save(f"{nuevaRuta}\\nuevaImagen.png")
     
-    # Creamos una ventana de tkinter para mostrar la imagen modificada
-    ventana = tk.Tk()
-    ventana.title("Imagen con cuadrado negro")
-    ventana.geometry(f"{ancho}x{alto}")
 
-    # Convertimos la imagen a formato PhotoImage para poder mostrarla en un widget de tkinter
-    foto = ImageTk.PhotoImage(nuevaImagen)
-
-    # Creamos un widget de tipo Label para mostrar la foto en la ventana
-    etiqueta = tk.Label(ventana, image=foto)
-    etiqueta.pack()
-
-    # Iniciamos el bucle principal de la ventana
-    ventana.mainloop()
-    
 
 if __name__ == "__main__":
-    # Obtenemos los puntos extremos del área que no es blanca de la imagen "imagen.png"
-    puntos = obtenerExtremos("imagen.png")
+    argumento = sys.argv
+    if (len(argumento) != 2):
+        print("Uso: python main.py ruta_de_la_imagen")
+        sys.exit(-1)
+    
+    ruta = argumento[1]
+        
+    # Obtenemos los puntos extremos del área que no es blanca
+    puntos = obtenerExtremos(ruta)
     
     # Movemos la imagen según los puntos obtenidos
-    moverImagen("imagen.png", puntos)
+    moverImagen(ruta, puntos)
+    
+    sys.exit(0)
